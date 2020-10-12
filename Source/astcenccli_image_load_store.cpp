@@ -28,9 +28,9 @@
 
 #include "astcenccli_internal.h"
 
-#include "stb_image.h"
-#include "stb_image_write.h"
-#include "tinyexr.h"
+#include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
+#include "tinyexr/tinyexr.h"
 
 /* ============================================================================
   Image load and store through the stb_iamge and tinyexr libraries

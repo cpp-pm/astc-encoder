@@ -26,6 +26,26 @@ project(${ASTC_TARGET})
 set(GNU_LIKE "GNU,Clang,AppleClang")
 set(CLANG_LIKE "Clang,AppleClang")
 
+set(ASTC_ENCODER_PUBLIC_HDR_LIST
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc.h
+)
+set(ASTC_ENCODER_PRIVATE_HDR_LIST
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_diagnostic_trace.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_internal.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_mathlib.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_vecmathlib.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_vecmathlib_avx2_8.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_vecmathlib_common_4.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_vecmathlib_neon_4.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_vecmathlib_none_4.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenc_vecmathlib_sse_4.h
+  ${ASTC_ENCODER_PUBLIC_HDR_LIST}
+)
+
+set(ASTC_ENCODER_CLI_PRIVATE_HDR_LIST
+  ${CMAKE_CURRENT_SOURCE_DIR}/astcenccli_internal.h
+)
+
 add_library(${ASTC_TARGET}-static
     STATIC
         astcenc_averages_and_directions.cpp
@@ -50,13 +70,21 @@ add_library(${ASTC_TARGET}-static
         astcenc_quantization.cpp
         astcenc_symbolic_physical.cpp
         astcenc_weight_align.cpp
-        astcenc_weight_quant_xfer_tables.cpp)
+        astcenc_weight_quant_xfer_tables.cpp
+        ${ASTC_ENCODER_PRIVATE_HDR_LIST})
 
 target_include_directories(${ASTC_TARGET}-static
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR})
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/astcenc>)
 
 if(${CLI})
+    hunter_add_package(stb)
+    find_package(stb CONFIG REQUIRED)
+
+    hunter_add_package(tinyexr)
+    find_package(tinyexr CONFIG REQUIRED)
+
     add_executable(${ASTC_TARGET}
         astcenccli_error_metrics.cpp
         astcenccli_image.cpp
@@ -68,7 +96,9 @@ if(${CLI})
 
     target_link_libraries(${ASTC_TARGET}
         PRIVATE
-            ${ASTC_TARGET}-static)
+            ${ASTC_TARGET}-static
+            stb::stb
+            tinyexr::tinyexr)
 endif()
 
 macro(astcenc_set_properties NAME)
@@ -141,9 +171,9 @@ macro(astcenc_set_properties NAME)
                 INTERPROCEDURAL_OPTIMIZATION_RELEASE True)
 
         # Use a static runtime on MSVC builds (ignored on non-MSVC compilers)
-        set_property(TARGET ${NAME}
-            PROPERTY
-                MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        # set_property(TARGET ${NAME}
+        #     PROPERTY
+        #         MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
     endif()
 
     # Set up configuration for SIMD ISA builds
@@ -247,6 +277,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 astcenc_set_properties(${ASTC_TARGET}-static)
+set(TARGETS ${ASTC_TARGET}-static)
 
 if(${CLI})
     astcenc_set_properties(${ASTC_TARGET})
@@ -262,5 +293,20 @@ if(${CLI})
         PRIVATE
             ${CMAKE_CURRENT_BINARY_DIR})
 
-    install(TARGETS ${ASTC_TARGET} DESTINATION ${PACKAGE_ROOT})
+    #install(TARGETS ${ASTC_TARGET} DESTINATION ${PACKAGE_ROOT})
+    set(TARGETS ${ASTC_TARGET})
 endif()
+
+install(
+    FILES ${ASTC_ENCODER_PUBLIC_HDR_LIST}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/astcenc
+)
+
+install(
+    TARGETS ${TARGETS}
+    EXPORT "${TARGETS_EXPORT_NAME}"
+    INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
