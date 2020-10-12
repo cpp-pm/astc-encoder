@@ -34,17 +34,17 @@
 	#define STB_IMAGE_IMPLEMENTATION
 	#define STB_IMAGE_WRITE_IMPLEMENTATION
 	#define STBI_MSC_SECURE_CRT
-	#define TINYEXR_IMPLEMENTATION
 	#define STBI_NO_GIF
 	#define STBI_NO_PIC
 	#define STBI_NO_PNM
 	#define STBI_NO_PSD
+//	#define TINYEXR_IMPLEMENTATION
 #else
 	#define STBI_HEADER_FILE_ONLY
 #endif
 
-#include "stb_image.h"
-#include "stb_image_write.h"
+#include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 #include "tinyexr.h"
 
 /*******************************************************************
