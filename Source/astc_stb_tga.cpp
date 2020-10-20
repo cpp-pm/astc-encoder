@@ -20,11 +20,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STBI_HEADER_FILE_ONLY
-#include "stb_image.c"
-
 astc_codec_image * load_image_with_stb(const char *filename, int padding, int *result)
 {
+#if 0
 	int xsize, ysize;
 	int components;
 
@@ -94,6 +92,7 @@ astc_codec_image * load_image_with_stb(const char *filename, int padding, int *r
 
 	// if we haven't returned, it's because we failed to load the file.
 	printf("Failed to load image %s\nReason: %s\n", filename, stbi_failure_reason());
+#endif
 
 	*result = -1;
 	return NULL;
