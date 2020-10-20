@@ -111,5 +111,6 @@ void test_inappropriate_extended_precision();
 void prepare_angular_tables();
 void build_quantization_mode_table();
 
-sf16 float_to_sf16(float, roundmode);
-
+extern "C" {
+    sf16 float_to_sf16(float, roundmode);
+}
