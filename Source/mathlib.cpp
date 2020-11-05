@@ -12,7 +12,7 @@
  *	@brief	Library of math functions.
  */ 
 /*----------------------------------------------------------------------------*/ 
-
+#define _USE_MATH_DEFINES
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>

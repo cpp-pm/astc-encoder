@@ -36,7 +36,7 @@
  *			quantization step (perhaps 1/8 for low levels of quantization)
  */
 /*----------------------------------------------------------------------------*/
-
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include "astc_codec_internals.h"
 
