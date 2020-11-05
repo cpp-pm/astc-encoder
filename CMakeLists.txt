@@ -1,11 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
 
-include(cmake/HunterGate.cmake)
-HunterGate(
-    URL "https://github.com/cpp-pm/hunter/archive/v0.23.275.tar.gz"
-    SHA1 "0952a54dc983ecbea09dfe8c53ee65d1e0e91232"
-)
-
 project(astc-encoder VERSION 1.3.1)
 
 # Introduce variables:
