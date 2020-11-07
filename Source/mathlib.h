@@ -17,6 +17,11 @@
 
 #define MATHLIB_H_INCLUDED
 
+#if _MSC_VER
+#  define _USE_MATH_DEFINES
+#  include <cmath>
+#endif
+
 #include "vectypes.h"
 
 // basic OpenCL functions
@@ -27,7 +32,7 @@ float cospi(float p);
 
 float nan(int p);
 
-#if __cplusplus < 201103L
+#if _MSC_VER && (__cplusplus < 201103L)
 float fmax(float p, float q);
 float fmin(float p, float q);
 #endif  // C++11
