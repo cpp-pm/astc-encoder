@@ -18,7 +18,8 @@
 if(${UNIVERSAL_BUILD})
     set(ASTC_TARGET astc${CODEC})
 else()
-    set(ASTC_TARGET astc${CODEC}-${ISA_SIMD})
+    #set(ASTC_TARGET astc${CODEC}-${ISA_SIMD})
+    set(ASTC_TARGET astc${CODEC})
 endif()
 
 project(${ASTC_TARGET})
